@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>Add Task</h2>
+        <input
+            type="text"
+            id="nameTask"
+            name="nameTask"
+            placeholder="Task name..."
+            required="true"
+        />
+        <input
+            type="submit"
+            value="Add Task"
+            id="addTaskBtn"
+        >
+        <h2>Tasks</h2>
+        <div>
+            <h3>Pending</h3>
+            <ul id="taskList"></ul>
+        </div>
+        <div>
+            <h3>Completed</h3>
+            <ul id="completedTaskList"></ul>
+        </div>
+    </div>
+    <script>
+        const tasks = [
+            { name: 'Study economy', completed: false },
+            { name: 'Practice Solidity Development', completed: false },
+        ];
+
+        const app = document.getElementById('app');
+        const taskList = document.getElementById('taskList');
+        const completedTaskList = document.getElementById('completedTaskList');
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+            completedTaskList.innerHTML = '';
+            tasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.innerHTML = `
+                    <label>
+                        <input 
+                            type='checkbox' 
+                            id='${task.name}' 
+                            name='${task.name}' 
+                            ${task.completed && 'checked'}
+                        />
+                        <span class="${task.completed && 'completed'}">${task.name}</span>
+                    </label>
+                `;
+                if (task.completed) {
+                    completedTaskList.appendChild(taskItem);
+                } else {
+                    taskList.appendChild(taskItem);
+                }
+                const checkbox = taskItem.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', () => {
+                    task.completed = !task.completed;
+                    renderTasks();
+                });
+            });
+        }
+
+        function addTask() {
+            const nameInput = document.getElementById('nameTask');
+            const task = {
+                name: nameInput.value,
+                completed: false
+            };
+            tasks.push(task);
+            nameInput.value = '';
+            renderTasks();
+        }
+
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        addTaskBtn.addEventListener('click', addTask);
+
+        renderTasks();
+    </script>
+</body>
+</html>
